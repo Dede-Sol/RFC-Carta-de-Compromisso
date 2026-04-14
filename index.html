@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFC — Automação Carta de Compromisso com IA | Nubank</title>
+<style>
+  :root {
+    --purple: #6C00EB;
+    --purple-light: #F3EEFF;
+    --purple-mid: #9B4DEB;
+    --dark: #1A1A2E;
+    --gray: #555;
+    --gray-light: #f8f8f8;
+    --green: #007030;
+    --white: #fff;
+    --border: #e0d0fa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    background: #fafafa;
+    line-height: 1.6;
+  }
+
+  /* ── Top bar */
+  .topbar {
+    background: var(--purple);
+    color: white;
+    padding: 10px 32px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topbar strong { font-size: 13px; }
+
+  /* ── Layout */
+  .container {
+    max-width: 960px;
+    margin: 32px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(108,0,235,0.10);
+    overflow: hidden;
+  }
+
+  /* ── Cover */
+  .cover {
+    background: linear-gradient(135deg, var(--purple) 0%, #9B4DEB 100%);
+    padding: 48px 48px 36px;
+    color: white;
+  }
+  .cover .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 12px;
+  }
+  .cover h1 {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .cover .subtitle {
+    font-size: 13px;
+    opacity: 0.75;
+    font-style: italic;
+  }
+
+  /* ── Meta table */
+  .meta-table {
+    margin: 0 48px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: -1px;
+  }
+  .meta-table table { width: 100%; border-collapse: collapse; }
+  .meta-table td {
+    padding: 9px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .meta-table td:first-child {
+    background: var(--purple-light);
+    color: var(--purple);
+    font-weight: 700;
+    width: 200px;
+  }
+  .meta-table tr:last-child td { border-bottom: none; }
+
+  /* ── Executive summary */
+  .exec-box {
+    margin: 24px 48px;
+    background: var(--purple-light);
+    border-left: 4px solid var(--purple);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--dark);
+    line-height: 1.7;
+  }
+  .exec-box strong { color: var(--purple); }
+
+  /* ── Page content */
+  .page { padding: 32px 48px; }
+
+  /* ── Section headings */
+  h2 {
+    font-size: 18px;
+    color: var(--purple);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    margin-top: 36px;
+  }
+  h3 {
+    font-size: 14px;
+    color: var(--purple-mid);
+    margin: 20px 0 10px;
+    font-weight: 700;
+  }
+  p { margin-bottom: 12px; color: var(--gray); font-size: 13px; }
+
+  /* ── Styled tables */
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 12.5px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(108,0,235,0.07);
+  }
+  .styled-table thead tr {
+    background: var(--purple);
+    color: white;
+    font-weight: 700;
+    text-align: left;
+  }
+  .styled-table thead th { padding: 10px 12px; }
+  .styled-table tbody tr:nth-child(even) { background: var(--purple-light); }
+  .styled-table tbody tr:nth-child(odd) { background: white; }
+  .styled-table tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .styled-table tbody tr:last-child td { border-bottom: none; }
+
+  /* ── Phase boxes */
+  .phase {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--purple);
+    color: white;
+    padding: 12px 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .phase-header .badge {
+    font-weight: 800;
+    font-size: 12px;
+    background: rgba(255,255,255,0.18);
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .phase-header .period {
+    font-size: 12px;
+    opacity: 0.8;
+    font-style: italic;
+  }
+  .phase-header .title { font-size: 14px; font-weight: 700; }
+  .phase-body { padding: 14px 18px; background: white; }
+  .phase-body ul { padding-left: 18px; margin-bottom: 10px; }
+  .phase-body li { margin-bottom: 5px; font-size: 13px; color: var(--dark); line-height: 1.5; }
+  .phase-kpi {
+    background: #efffee;
+    border-left: 3px solid var(--green);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--green);
+    border-radius: 0 6px 6px 0;
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  /* ── Risk badges */
+  .risk-alto   { background: #fde8e8; color: #c0392b; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .risk-medio  { background: #fff3cd; color: #b8860b; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .risk-baixo  { background: #efffee; color: #007030; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+
+  /* ── Numbered steps */
+  .steps-list { counter-reset: step; padding: 0; margin: 12px 0 20px; }
+  .steps-list li {
+    counter-increment: step;
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .steps-list li::before {
+    content: counter(step);
+    background: var(--purple);
+    color: white;
+    border-radius: 50%;
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Bullet rules */
+  .rules-list { padding-left: 20px; margin: 10px 0 20px; }
+  .rules-list li { margin-bottom: 6px; font-size: 13px; line-height: 1.5; color: var(--dark); }
+
+  /* ── Python tips */
+  .tip-box {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 8px 0;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .tip-box span.lib { color: #cba6f7; font-weight: 700; }
+  .tip-box span.comment { color: #6c7086; }
+
+  /* ── Footer */
+  .footer {
+    text-align: center;
+    padding: 20px 32px;
+    background: var(--purple-light);
+    font-size: 11px;
+    color: var(--gray);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Nav sidebar (sticky) */
+  .nav {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    width: 160px;
+    box-shadow: 0 2px 12px rgba(108,0,235,0.09);
+    font-size: 11px;
+  }
+  .nav a {
+    display: block;
+    color: var(--gray);
+    text-decoration: none;
+    padding: 5px 8px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: all .15s;
+    line-height: 1.4;
+  }
+  .nav a:hover { background: var(--purple-light); color: var(--purple); }
+  .nav .nav-title { font-weight: 700; color: var(--purple); margin-bottom: 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+  @media (max-width: 1200px) { .nav { display: none; } }
+  @media print { .nav { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ── Top bar -->
+<div class="topbar">
+  <span>🔐 RFC — Documento de uso interno | Nubank Ouvidoria</span>
+  <strong>v0.1 — Abril 2026</strong>
+</div>
+
+<!-- ── Nav -->
+<nav class="nav">
+  <div class="nav-title">Seções</div>
+  <a href="#capa">Capa & Resumo</a>
+  <a href="#fluxo">1. Fluxo To-Be</a>
+  <a href="#comparativo">1.2 Comparativo</a>
+  <a href="#fases">2. Implantação</a>
+  <a href="#riscos">3. Riscos</a>
+  <a href="#frameworks">3.1 Regulatório</a>
+  <a href="#playbook">4. Playbook</a>
+  <a href="#glossario">4.4 Glossário</a>
+  <a href="#python">4.5 Python</a>
+</nav>
+
+<!-- ── Container -->
+<div class="container">
+
+  <!-- CAPA -->
+  <div class="cover" id="capa">
+    <div class="tag">🔐 RFC — Request for Comments</div>
+    <h1>Automação da Carta de Compromisso com IA</h1>
+    <div class="subtitle">Ouvidoria / Complaint Solutions &nbsp;•&nbsp; Nubank &nbsp;•&nbsp; Abril 2026</div>
+  </div>
+
+  <!-- META -->
+  <div class="meta-table">
+    <table>
+      <tr><td>Autor(a):</td><td>Denise Soliman</td></tr>
+      <tr><td>Área:</td><td>Ouvidoria / Complaint Solutions</td></tr>
+      <tr><td>Versão:</td><td>0.1 — Rascunho inicial</td></tr>
+      <tr><td>Status:</td><td>Em revisão</td></tr>
+      <tr><td>Data:</td><td>14 de abril de 2026</td></tr>
+      <tr><td>Revisor(a) sugerido(a):</td><td>Tech Lead + Compliance + Jurídico</td></tr>
+    </table>
+  </div>
+
+  <!-- EXEC SUMMARY -->
+  <div class="exec-box">
+    <strong>Resumo Executivo</strong><br>
+    Este documento propõe a automação completa do processo de emissão de Cartas de Compromisso na Ouvidoria do Nubank.
+    Hoje, o analista cola manualmente dados do <strong>Marte</strong> em uma planilha Excel, que agrupa transações por adquirente ou TED/Boleto e gera cartas no Google Drive.
+    Com IA, esse fluxo será substituído por um pipeline que lê os dados automaticamente, classifica as transações, preenche os templates e envia os documentos —
+    <strong>reduzindo o tempo de ciclo estimado em 70%</strong> e eliminando erros de preenchimento.
+  </div>
+
+  <div class="page">
+
+    <!-- ════════════════════════ SEÇÃO 1 ════════════════════════ -->
+    <h2 id="fluxo">1. Fluxo To-Be — Sistema com IA</h2>
+    <p>O novo fluxo elimina todas as etapas manuais de copiar e colar. A IA assume a leitura, classificação e preenchimento; o analista só revisa e aprova.</p>
+
+    <h3>1.1 Visão geral do fluxo</h3>
+    <table class="styled-table">
+      <thead><tr><th style="width:40px">#</th><th style="width:160px">Etapa</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td><strong>Gatilho automático</strong></td><td>Um caso de reclamação é aberto no Marte ou em fila monitorada. O sistema de IA é acionado via webhook ou polling periódico.</td></tr>
+        <tr><td><strong>2</strong></td><td><strong>Extração de dados</strong></td><td>A IA lê os campos do caso: transações, valores, datas, CPF/CNPJ e Customer ID. Nenhum "copiar e colar" é necessário.</td></tr>
+        <tr><td><strong>3</strong></td><td><strong>Classificação automática</strong></td><td>O modelo identifica o tipo de transação: (a) Adquirente ou (b) TED/Boleto. Isso define qual template e qual fluxo de agrupamento será usado.</td></tr>
+        <tr><td><strong>4</strong></td><td><strong>Lookup de IF</strong></td><td>O sistema consulta a base "Contato de Bancos" (158+ IFs mapeadas) para localizar ISPB, e-mail principal e e-mail cópia da IF destinatária.</td></tr>
+        <tr><td><strong>5</strong></td><td><strong>Agrupamento de transações</strong></td><td>Transações do mesmo adquirente (ou mesmo banco recebedor) são consolidadas em um único grupo — equivalente às abas 1.1/2.1 da planilha atual.</td></tr>
+        <tr><td><strong>6</strong></td><td><strong>Geração da carta</strong></td><td>O template é preenchido automaticamente com: nome do cliente, CPF/CNPJ, Customer ID, lista de transações, valores e datas. O documento é criado no Google Drive.</td></tr>
+        <tr><td><strong>7</strong></td><td><strong>Revisão humana</strong></td><td>O analista recebe uma notificação com link para a carta gerada. Ele pode aprovar com 1 clique, editar campos ou rejeitar (com comentário).</td></tr>
+        <tr><td><strong>8</strong></td><td><strong>Envio da carta</strong></td><td>Após aprovação, o sistema envia automaticamente via <strong>legitimidade@nubank.com.br</strong> para o(s) e-mail(s) da IF. O ticket é atualizado com comprovante.</td></tr>
+        <tr><td><strong>9</strong></td><td><strong>Registro e auditoria</strong></td><td>Todos os eventos (geração, aprovação, envio) são gravados com timestamp, ID do analista e versão do documento para fins regulatórios.</td></tr>
+        <tr><td><strong>10</strong></td><td><strong>IFs não mapeadas</strong></td><td>Se o adquirente não constar na base, o sistema sinaliza, notifica o analista e abre uma tarefa para incluir o novo contato na base.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="comparativo">1.2 Comparativo: Antes vs. Depois</h3>
+    <table class="styled-table">
+      <thead><tr><th>Atividade</th><th>As-Is (Hoje)</th><th>To-Be (com IA)</th></tr></thead>
+      <tbody>
+        <tr><td>Leitura de dados do Marte</td><td>Manual — copia e cola</td><td>✅ Automática via API/webhook</td></tr>
+        <tr><td>Classificação da transação</td><td>Manual — analista decide</td><td>✅ IA classifica em &lt; 2 segundos</td></tr>
+        <tr><td>Lookup de e-mail da IF</td><td>Manual — abre aba de bancos</td><td>✅ Automático via base de dados</td></tr>
+        <tr><td>Preenchimento do template</td><td>Manual — campo por campo</td><td>✅ Automático via IA generativa</td></tr>
+        <tr><td>Geração do arquivo no Drive</td><td>Semi-automático (Apps Script)</td><td>✅ 100% automático</td></tr>
+        <tr><td>Revisão e aprovação</td><td>Inexistente</td><td>✅ 1 clique — com diff visual</td></tr>
+        <tr><td>Envio do e-mail</td><td>Manual</td><td>✅ Automático pós-aprovação</td></tr>
+        <tr><td>Registro de auditoria</td><td>Depende do analista</td><td>✅ 100% automático e imutável</td></tr>
+        <tr><td><strong>Tempo estimado por caso</strong></td><td><strong>~25 minutos</strong></td><td><strong>~3–5 minutos</strong></td></tr>
+        <tr><td><strong>Taxa de erro de preenchimento</strong></td><td><strong>~15% (estimado)</strong></td><td><strong>&lt; 1% (estimado)</strong></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ════════════════════════ SEÇÃO 2 ════════════════════════ -->
+    <h2 id="fases">2. Plano de Implantação em Fases</h2>
+    <p>A implantação segue a lógica "caminhar antes de correr": cada fase entrega valor real e serve de aprendizado para a próxima.</p>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="badge">FASE 1 — MVP</span>
+        <span class="period">Semanas 1–6</span>
+        <span class="title">Automação da extração e preenchimento básico</span>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Criar script Python que lê o CSV exportado do Marte (sem integração live ainda).</li>
+          <li>Script classifica transações em Adquirente ou TED/Boleto usando regras simples (if/else).</li>
+          <li>Lookup automático na aba "Contato de Bancos" pelo ISPB.</li>
+          <li>Gerar carta em Google Docs via API (usando o ID do template existente).</li>
+          <li>Salvar carta na pasta do Drive com nome padronizado.</li>
+          <li>Enviar e-mail com anexo via Gmail API para o endereço da IF.</li>
+          <li>Log de ações em planilha de auditoria simples.</li>
+        </ul>
+        <div class="phase-kpi">✅ Meta: Analistas testam o script em casos reais de baixo risco. Feedback semanal.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="badge">FASE 2 — Integração Marte</span>
+        <span class="period">Semanas 7–12</span>
+        <span class="title">Eliminar a etapa de exportação manual</span>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Integração com a API do Marte para leitura direta dos dados do caso.</li>
+          <li>Gatilho automático quando caso entra em status "Carta de Compromisso".</li>
+          <li>Dashboard simples mostrando cartas pendentes, aprovadas e enviadas.</li>
+          <li>Implementar tela de revisão com diff visual (o que a IA preencheu vs. template).</li>
+          <li>Tratamento automático de IFs não mapeadas com alerta ao analista.</li>
+        </ul>
+        <div class="phase-kpi">✅ Meta: Piloto com 2–3 analistas. 80% das cartas sem intervenção manual.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="badge">FASE 3 — IA Generativa</span>
+        <span class="period">Semanas 13–20</span>
+        <span class="title">Usar LLM para adaptar linguagem e detectar inconsistências</span>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Integrar modelo de linguagem (ex.: Claude API) para redigir parágrafos personalizados.</li>
+          <li>Detecção automática de inconsistências nos dados (valor negativo, data futura, etc.).</li>
+          <li>Sugestão de e-mail de encaminhamento ao cliente após envio da carta.</li>
+          <li>Classificação de risco do caso (baixo/médio/alto) para priorização.</li>
+          <li>Modelo aprende com correções dos analistas (feedback loop).</li>
+        </ul>
+        <div class="phase-kpi">✅ Meta: Expansão para toda a equipe de Ouvidoria. Monitoramento de acurácia semanal.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="badge">FASE 4 — Expansão</span>
+        <span class="period">Semanas 21–30</span>
+        <span class="title">Integrar com outros sistemas e otimizar a operação</span>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Integração com sistema de protocolo do BACEN/PROCON para prazos automáticos.</li>
+          <li>Alertas de SLA: carta não enviada a X horas do prazo regulatório.</li>
+          <li>Relatórios automáticos para gestores (volume, tempo médio, erros).</li>
+          <li>Atualização automática da base de IFs via consulta ao ISPB do BACEN.</li>
+          <li>Avaliação de expansão para outras áreas (ex.: Contestações, Fraude).</li>
+        </ul>
+        <div class="phase-kpi">✅ Meta: Operação plena. Revisão trimestral de performance e ajustes de modelo.</div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════ SEÇÃO 3 ════════════════════════ -->
+    <h2 id="riscos">3. Riscos Regulatórios e Controles</h2>
+    <p>A Carta de Compromisso é um documento com validade jurídica. A automação deve respeitar obrigações do BACEN e do CDC.</p>
+
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th style="width:40px">ID</th>
+          <th style="width:160px">Risco</th>
+          <th style="width:75px">Impacto</th>
+          <th style="width:70px">Prob.</th>
+          <th>Descrição</th>
+          <th>Controle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R1</strong></td>
+          <td>Documento com conteúdo incorreto</td>
+          <td><span class="risk-alto">Alto</span></td>
+          <td><span class="risk-alto">Alto</span></td>
+          <td>IA preenche campo errado (ex.: CPF trocado entre clientes).</td>
+          <td>Revisão humana obrigatória antes do envio. Double-check automático de CPF/CNPJ. Diff visual.</td>
+        </tr>
+        <tr>
+          <td><strong>R2</strong></td>
+          <td>Envio para IF errada</td>
+          <td><span class="risk-alto">Alto</span></td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td>Lookup retorna e-mail incorreto por ISPB desatualizado.</td>
+          <td>Validação cruzada do ISPB com a API do BACEN. Alerta se ISPB não encontrado.</td>
+        </tr>
+        <tr>
+          <td><strong>R3</strong></td>
+          <td>Perda de prazo regulatório</td>
+          <td><span class="risk-alto">Alto</span></td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td>Falha no sistema gera atraso no envio dentro do prazo legal.</td>
+          <td>SLA automatizado com alerta 24h antes do prazo. Fallback manual com notificação ao gestor.</td>
+        </tr>
+        <tr>
+          <td><strong>R4</strong></td>
+          <td>Violação da LGPD</td>
+          <td><span class="risk-alto">Alto</span></td>
+          <td><span class="risk-baixo">Baixo</span></td>
+          <td>Dados de clientes processados por IA sem base legal clara.</td>
+          <td>Revisar com DPO se o uso de IA está coberto pela política de privacidade. Logs de acesso.</td>
+        </tr>
+        <tr>
+          <td><strong>R5</strong></td>
+          <td>Adulteração do template</td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td><span class="risk-baixo">Baixo</span></td>
+          <td>IA modifica cláusulas jurídicas do template sem validação.</td>
+          <td>Template versionado e bloqueado. IA só preenche campos variáveis. Aprovação pelo Jurídico.</td>
+        </tr>
+        <tr>
+          <td><strong>R6</strong></td>
+          <td>Acesso não autorizado</td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td>Terceiros acessam cartas ou dados de clientes via falha de permissão.</td>
+          <td>Controle de acesso baseado em papéis (RBAC). Pasta do Drive com permissão restrita.</td>
+        </tr>
+        <tr>
+          <td><strong>R7</strong></td>
+          <td>Alucinação do modelo de IA</td>
+          <td><span class="risk-alto">Alto</span></td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td>LLM inventa dados ou cláusulas que não existem no template original.</td>
+          <td>IA usa APENAS campos pré-definidos. Nenhum texto livre gerado sem revisão. Testes mensais.</td>
+        </tr>
+        <tr>
+          <td><strong>R8</strong></td>
+          <td>Continuidade operacional</td>
+          <td><span class="risk-medio">Médio</span></td>
+          <td><span class="risk-baixo">Baixo</span></td>
+          <td>Sistema fora do ar impede geração de cartas dentro do prazo.</td>
+          <td>Fallback documentado: planilha atual continua disponível como contingência. Runbook de incidente.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="frameworks">3.1 Frameworks Regulatórios Aplicáveis</h3>
+    <table class="styled-table">
+      <thead><tr><th style="width:260px">Framework</th><th>Relevância para o projeto</th></tr></thead>
+      <tbody>
+        <tr><td><strong>BACEN — Resolução CMN 4.860/2020</strong></td><td>Regula o funcionamento dos componentes do sistema de pagamentos. As cartas de compromisso são documentos formais dentro desse ecossistema.</td></tr>
+        <tr><td><strong>LGPD (Lei 13.709/2018)</strong></td><td>Dados pessoais de clientes (CPF, nome, Customer ID) são processados no fluxo. É preciso confirmar com o DPO se o uso de IA está previsto nas políticas internas.</td></tr>
+        <tr><td><strong>Código de Defesa do Consumidor</strong></td><td>Prazos de resposta a reclamações são regulados. A automação deve garantir cumprimento, não criar novos riscos de atraso.</td></tr>
+        <tr><td><strong>Política interna — Segurança da Informação</strong></td><td>Verificar com o time de InfoSec se o uso de APIs externas (ex.: LLMs) é permitido para dados de clientes ou se deve ser via modelo interno.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ════════════════════════ SEÇÃO 4 ════════════════════════ -->
+    <h2 id="playbook">4. Playbook Operacional</h2>
+    <p>Este playbook é o guia do dia a dia para os analistas que irão operar o sistema. Mantenha-o atualizado a cada iteração do produto.</p>
+
+    <h3>4.1 Como usar o sistema — Fase 1 (MVP)</h3>
+    <ol class="steps-list">
+      <li>Abra o caso no Marte e exporte o CSV de transações (botão "Exportar dados").</li>
+      <li>Acesse o painel da ferramenta em <em>[URL a definir]</em> e faça o upload do CSV.</li>
+      <li>O sistema classifica automaticamente: confirme se é "Adquirente" ou "TED/Boleto".</li>
+      <li>Revise os campos preenchidos: nome do cliente, CPF, valores e e-mail da IF.</li>
+      <li>Se tudo estiver correto, clique em <strong>"Aprovar e Enviar"</strong>. Se não, clique em <strong>"Editar"</strong>.</li>
+      <li>Verifique no Google Drive que a carta foi salva na pasta correta.</li>
+      <li>Confirme o recebimento do e-mail de confirmação de envio.</li>
+      <li>Em caso de IF não mapeada: preencha o formulário de cadastro de nova IF.</li>
+    </ol>
+
+    <h3>4.2 Regras de negócio importantes</h3>
+    <ul class="rules-list">
+      <li>O e-mail de envio deve ser sempre <strong>legitimidade@nubank.com.br</strong> — nunca o e-mail pessoal do analista.</li>
+      <li>Cartas para o mesmo adquirente (mesmo ISPB) devem ser consolidadas em um único documento.</li>
+      <li>O Customer ID deve ser conferido manualmente se houver mais de uma pessoa no caso.</li>
+      <li>Documentos enviados não podem ser alterados — abra novo caso para correções.</li>
+      <li>IFs não mapeadas devem ser cadastradas em até 24h para não bloquear o fluxo.</li>
+    </ul>
+
+    <h3>4.3 O que fazer se algo der errado (Troubleshooting)</h3>
+    <table class="styled-table">
+      <thead><tr><th style="width:240px">Problema</th><th>O que fazer</th></tr></thead>
+      <tbody>
+        <tr><td>Sistema não reconhece a IF</td><td>Verifique se o ISPB está correto. Se a IF não está na base, cadastre-a pela tela de "Nova IF".</td></tr>
+        <tr><td>Carta gerada com dados errados</td><td>Clique em "Rejeitar", corrija os dados no formulário e gere novamente. Não edite o arquivo no Drive diretamente.</td></tr>
+        <tr><td>E-mail de envio falhou</td><td>Acesse o log de erros no painel. Tente reenviar. Se persistir, envie manualmente e registre o incidente.</td></tr>
+        <tr><td>Sistema fora do ar</td><td>Use a planilha Excel de contingência (Carta de Compromisso v2). Notifique o time de suporte via Slack.</td></tr>
+        <tr><td>Prazo regulatório próximo</td><td>Priorize os casos com alerta vermelho no painel. Se necessário, envie manualmente e registre na planilha de auditoria.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="glossario">4.4 Glossário rápido para iniciantes</h3>
+    <table class="styled-table">
+      <thead><tr><th style="width:120px">Termo</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ISPB</strong></td><td>Código de identificação de uma Instituição Financeira no sistema do BACEN (ex.: 0 = Banco do Brasil).</td></tr>
+        <tr><td><strong>IF</strong></td><td>Instituição Financeira — o banco ou adquirente que receberá a carta.</td></tr>
+        <tr><td><strong>Adquirente</strong></td><td>Empresa que processa pagamentos com cartão (ex.: Cielo, Stone, Getnet).</td></tr>
+        <tr><td><strong>TED/Boleto</strong></td><td>Transações via Transferência Eletrônica Disponível ou boleto bancário.</td></tr>
+        <tr><td><strong>Marte</strong></td><td>Sistema interno do Nubank onde ficam registradas as reclamações dos clientes.</td></tr>
+        <tr><td><strong>Carta de Compromisso</strong></td><td>Documento formal enviado à IF solicitando posicionamento sobre uma transação contestada.</td></tr>
+        <tr><td><strong>LGPD</strong></td><td>Lei Geral de Proteção de Dados — regula como dados pessoais podem ser usados.</td></tr>
+        <tr><td><strong>LLM</strong></td><td>Large Language Model — o tipo de IA (como o Claude) que lê e gera texto com contexto.</td></tr>
+        <tr><td><strong>MVP</strong></td><td>Minimum Viable Product — a versão mais simples do sistema que já entrega valor real.</td></tr>
+        <tr><td><strong>Webhook</strong></td><td>Mecanismo automático que avisa um sistema quando um evento acontece em outro sistema.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="python">4.5 Dicas para quem está aprendendo Python</h3>
+    <p>Se você quiser entender ou adaptar o código do sistema, aqui estão os pontos de partida:</p>
+
+    <div class="tip-box">
+      <span class="lib">pandas</span> — lê e manipula tabelas (como Excel). Você já usa o conceito — é a mesma lógica das abas da planilha.<br>
+      <span class="comment">import pandas as pd &nbsp; → &nbsp; df = pd.read_excel("arquivo.xlsx")</span>
+    </div>
+    <div class="tip-box">
+      <span class="lib">requests / httpx</span> — para chamar APIs externas (ex.: Google Drive, Marte). É como "pedir uma informação para outro sistema".<br>
+      <span class="comment">import requests &nbsp; → &nbsp; resposta = requests.get("https://api.exemplo.com/dados")</span>
+    </div>
+    <div class="tip-box">
+      <span class="lib">python-docx</span> — cria e edita documentos Word por código. Útil para gerar templates automaticamente.<br>
+      <span class="comment">from docx import Document &nbsp; → &nbsp; doc = Document("template.docx")</span>
+    </div>
+    <div class="tip-box">
+      <span class="lib">google-api-python-client</span> — interage com Google Drive e Gmail diretamente pelo Python.<br>
+      <span class="comment">from googleapiclient.discovery import build &nbsp; → &nbsp; service = build("drive", "v3", credentials=creds)</span>
+    </div>
+    <div style="margin-top:12px; background:#efffee; border-left:3px solid #007030; padding:10px 14px; border-radius:0 6px 6px 0; font-size:12.5px; color:#007030; font-style:italic;">
+      💡 <strong>Comece pelo script da Fase 1:</strong> ele não precisa de nenhuma integração — só lê um CSV e gera a carta. É o melhor ponto de entrada para quem está aprendendo Python.
+    </div>
+
+  </div><!-- /page -->
+
+  <div class="footer">
+    RFC — Automação Carta de Compromisso com IA &nbsp;•&nbsp; Nubank Ouvidoria &nbsp;•&nbsp; v0.1 &nbsp;•&nbsp; Abril 2026<br>
+    Este documento é um rascunho para discussão interna. Não compartilhar externamente.
+  </div>
+
+</div><!-- /container -->
+
+</body>
+</html>
